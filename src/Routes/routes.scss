@@ -1,0 +1,24 @@
+$default-font-size: 0.6rem !important;
+.styled.form-control {
+  border: none;
+}
+.styled {
+  border: none;
+}
+
+.styled.styled.form-control:focus {
+  box-shadow: none;
+  border: 1px blue solid;
+}
+
+.form-control {
+  font-size: $default-font-size;
+}
+.app {
+  font-size: $default-font-size;
+  @media print {
+    .print_hide {
+      display: none;
+    }
+  }
+}
