@@ -453,3 +453,5 @@ export const currency_list = {
     "YER": "Yemeni Rial",
     "ZMK": "Zambian Kwacha"
 };
+
+export const invoiceDetailsTemplate = { itemDescritption: "", HNC: "", qty: 1, sgst: 0, cgst: 0, rate: 0 };

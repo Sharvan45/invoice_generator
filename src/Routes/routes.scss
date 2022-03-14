@@ -16,6 +16,10 @@ $default-font-size: 0.6rem !important;
 }
 .app {
   font-size: $default-font-size;
+
+  .custom_padding {
+    padding: 0.375rem 0.75rem;
+  }
   @media print {
     .print_hide {
       display: none;
