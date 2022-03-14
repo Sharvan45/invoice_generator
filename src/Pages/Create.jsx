@@ -3,8 +3,10 @@ import { Button, FormControl, Table } from "react-bootstrap";
 import DatePicker from "react-datepicker";
 
 import "react-datepicker/dist/react-datepicker.css";
+import { convertModelToFormData } from "../shared/convertors";
 import CountryStateDropdown from "../shared/CountryStateDropdown";
-import currencyDropdown from "../shared/currenyDropdown";
+import { POST } from "../shared/httprequest,";
+// import currencyDropdown from "../shared/currenyDropdown";
 import "./Create.scss";
 
 const renderTotal = (items) => {
@@ -51,7 +53,12 @@ const validation = (items) => {
 }
 
 const removeFromErrors = (errors, item) => {
+    let index = errors.indexOf(item);
+    errors.splice(index, 1);
+    return errors
 }
+const findEmpty = (value) => value ? "" : "print_hide "
+
 export const Create = () => {
 
     const [tableDetails, setTableDetails] = useState([{ itemDescritption: "", HNC: "", qty: 1, sgst: 0, cgst: 0, rate: 0 }])
@@ -79,8 +86,18 @@ export const Create = () => {
     const [headings, setHeading] = useState({ mainHeader: "Tax Invoice" })
 
     const onOwnChange = (e, field) => {
+        switch (field) {
+            case "companyName":
+                removeFromErrors(errorList, "ownDetails_name");
+                setTableDetails([...tableDetails]);
+                break;
+            default:
+                break;
+        }
         setOwnDetails({ ...ownDetails, [field]: e.target.value });
     }
+
+
 
     const onClientChange = (e, field) => {
         setClientDetails({ ...clientDetails, [field]: e.target.value });
@@ -90,6 +107,7 @@ export const Create = () => {
         let errors = validation({ ownDetails, clientDetails, tableDetails });
         setErrorList(errors);
         if (errors.length === 0) {
+            POST("invoices", convertModelToFormData({ ownDetails, clientDetails, tableDetails }))
         }
     }
 
@@ -108,17 +126,21 @@ export const Create = () => {
             </div>
             <div className="row">
                 <div className="col-4">
-                    <FormControl placeholder="Your Company Name" className="styled"
+                    <FormControl placeholder="Your Company Name" className={findEmpty(ownDetails.companyName) +
+                        "styled"}
                         onChange={(e) => onOwnChange(e, "companyName")} />
                     {errorList.includes("ownDetails_name") &&
                         <div className="text-danger">Please enter your company name</div>}
-                    <FormControl placeholder="Your Name" className="styled"
+                    <FormControl placeholder="Your Name" className={findEmpty(ownDetails.name) + "styled"}
                         onChange={(e) => onOwnChange(e, "name")} />
-                    <FormControl placeholder="Your Company GSTIN" className="styled"
+                    <FormControl placeholder="Your Company GSTIN"
+                        className={findEmpty(ownDetails.companyGST) + "styled"}
                         onchange={(e) => onOwnChange(e, "companyGST")} />
-                    <FormControl placeholder="Your Company Address" className="styled"
+                    <FormControl placeholder="Your Company Address"
+                        className={findEmpty(ownDetails.companyAddress) + "styled"}
                         onChange={(e) => onOwnChange(e, "companyAddress")} />
-                    <FormControl placeholder="City" className="styled"
+                    <FormControl placeholder="City"
+                        className={findEmpty(ownDetails.companyCity) + "styled"}
                         onChange={(e) => onOwnChange(e, "companyCity")} />
                     <CountryStateDropdown isState
                         onChange={(e) => onOwnChange(e, "companyState")}

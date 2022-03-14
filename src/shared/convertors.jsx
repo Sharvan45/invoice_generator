@@ -1,10 +1,7 @@
 export const convertModelToFormData = (model) => {
-    let formatter = {
+    return {
         "customer_id": 982000000567001,
-        "contact_persons": [
-            "982000000870911",
-            "982000000870915"
-        ],
+        "contact_persons": [model?.ownDetails?.name],
         "invoice_number": "INV-00003",
         "reference_number": " ",
         "place_of_supply": "TN",
@@ -23,12 +20,7 @@ export const convertModelToFormData = (model) => {
         "recurring_invoice_id": " ",
         "invoiced_estimate_id": " ",
         "salesperson_name": " ",
-        "custom_fields": [
-            {
-                "label": "Record Number",
-                "value": 23
-            }
-        ],
+        "custom_fields": [],
         "project_id": 90300000087378,
         "line_items": [
             {
