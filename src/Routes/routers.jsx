@@ -5,7 +5,7 @@ import { BrowserRouter as Router, Routes, Route, } from "react-router-dom";
 import { Create } from "../Pages/Create";
 import { Edit } from "../Pages/Edit";
 import { List } from "../Pages/List";
-import Header from "../shared/header";
+// import Header from "../shared/header";
 
 export const Routers = () => {
     return (
