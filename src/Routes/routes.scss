@@ -24,5 +24,8 @@ $default-font-size: 0.6rem !important;
     .print_hide {
       display: none;
     }
+    textarea {
+      resize: none;
+    }
   }
 }

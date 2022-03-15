@@ -7,6 +7,9 @@ import CountryStateDropdown from "./CountryStateDropdown";
 import { POST } from "./httprequest,";
 import "react-datepicker/dist/react-datepicker.css";
 import "./invoiceTemplate.scss";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { invoiceDetailsTemplate } from "./constants";
 
 const renderTotal = (items) => {
     let total = 0;
@@ -15,26 +18,26 @@ const renderTotal = (items) => {
     items.forEach((item) => {
         total += (item.qty * item.rate);
         sgst += ((item.sgst / 100) * (item.qty * item.rate));
-        cgst += ((item.sgst / 100) * (item.qty * item.rate));
+        cgst += ((item.cgst / 100) * (item.qty * item.rate));
     })
     return <Table>
         <tbody>
             <tr>
                 <td>Sub Total</td>
-                <td>{total}</td>
+                <td>{total.toFixed(2)}</td>
             </tr>
             <tr>
                 <td>SGST</td>
-                <td>{sgst}</td>
+                <td>{sgst.toFixed(2)}</td>
             </tr>
             <tr>
                 <td>CGST</td>
-                <td>{cgst}</td>
+                <td>{cgst.toFixed(2)}</td>
             </tr>
             <tr>
                 <td>Total</td>
                 <td><currencyDropdown />
-                    {total + sgst + cgst}</td>
+                    {(total + sgst + cgst).toFixed(2)}</td>
             </tr>
         </tbody>
     </Table>;
@@ -93,8 +96,19 @@ export const InvoiceTemplate = () => {
         mainHeader: "Tax Invoice",
         invoice_1: "Invoice Number",
         invoice_2: "Invoice Date",
-        invoice_3: "Due Date"
+        invoice_3: "Due Date",
+        table_1: "Item Description",
+        table_2: "Quantity",
+        table_3: "Rate",
+        table_4: "Amount",
+        footer_1: "Notes",
+        footer_2: "Terms & Conditions",
     });
+
+    const [footer, setFooter] = useState({
+        notes: "It was great doing business with you.",
+        tac: "Please make the payment by the due date."
+    })
 
     const onOwnChange = (e, field) => {
         switch (field) {
@@ -107,8 +121,6 @@ export const InvoiceTemplate = () => {
         }
         setOwnDetails({ ...ownDetails, [field]: e.target.value });
     }
-
-
 
     const onClientChange = (e, field) => {
         switch (field) {
@@ -134,6 +146,21 @@ export const InvoiceTemplate = () => {
         items[index][field] = e.target.value;
         setTableDetails(items);
     }
+
+    const onDeleteItem = (index) => {
+        if (tableDetails.length > 1) {
+            let items = [...tableDetails];
+            items.splice(index, 1);
+            setTableDetails(items);
+        }
+    }
+
+    const onAddItem = () => {
+        let items = [...tableDetails];
+        items.push(invoiceDetailsTemplate);
+        setTableDetails(items);
+    }
+
     return (
         <>
             <div className="row print_hide">
@@ -145,6 +172,13 @@ export const InvoiceTemplate = () => {
                         onClick={() => { onSubmitClick() }}
                     >
                         Save </Button>
+                    <Button
+                        variant="outline-primary"
+                        size="sm"
+                        style={{ float: 'right' }}
+                        onClick={() => { window.print() }}
+                    >
+                        Print </Button>
                 </div>
             </div>
             <div className="row">
@@ -269,13 +303,16 @@ export const InvoiceTemplate = () => {
                     <thead className="itemTable">
                         <tr>
                             <th>
-                                <FormControl className="styled" value={"Item Description"} />
+                                <FormControl className="styled" value={headings.table_1}
+                                    onChange={(e) => setHeading({ ...headings, table_1: e.target.value })} />
                             </th>
                             <th>
-                                <FormControl className="styled" value={"Quantity"} />
+                                <FormControl className="styled" value={headings.table_2}
+                                    onChange={(e) => setHeading({ ...headings, table_2: e.target.value })} />
                             </th>
                             <th>
-                                <FormControl className="styled" value={"Rate"} />
+                                <FormControl className="styled" value={headings.table_3}
+                                    onChange={(e) => setHeading({ ...headings, table_3: e.target.value })} />
                             </th>
                             <th>
                                 <div>{"SGST"} </div >
@@ -284,7 +321,8 @@ export const InvoiceTemplate = () => {
                                 <div>{"CGST"} </div >
                             </th>
                             <th>
-                                <FormControl className="styled" value={"Amount"} />
+                                <FormControl className="styled" value={headings.table_4}
+                                    onChange={(e) => setHeading({ ...headings, table_4: e.target.value })} />
                             </th>
                             <th className="print_hide">
                             </th>
@@ -298,9 +336,9 @@ export const InvoiceTemplate = () => {
                                     onChange={(e) => onItemTableChange(e, index, "itemDescritption")}
                                     value={tb.itemDescritption} />
                                 <br />
-                                <FormControl className="styled"
+                                {/* <FormControl className="styled"
                                     onChange={(e) => onItemTableChange(e, index, "HSN")}
-                                    placeholder={"HSN/SGC"} value={tb.HNC} />
+                                    placeholder={"HSN/SGC"} value={tb.HNC} /> */}
                             </td>
                             <td key={tb.itemDescritption + index}>
                                 <FormControl className="styled" value={tb.qty}
@@ -327,17 +365,42 @@ export const InvoiceTemplate = () => {
                                 </div>
                             </td>
                             <td key={tb.itemDescritption + index} className="print_hide">
-                                Delete
+                                <FontAwesomeIcon icon={faTrash}
+                                    onClick={() => onDeleteItem(index)} />
                             </td>
                         </tr>)}
                     </tbody>
                 </Table>
                 <div>
                     <div className="row">
-                        <div className="col-6">Add </div>
+                        <div className="col-6">
+                            <div className="print_hide"><FontAwesomeIcon icon={faPlus}
+                                onClick={() => onAddItem()} />
+                                Add</div> </div>
                         <div className="col-6">
                             {renderTotal(tableDetails)}
                         </div>
+                    </div>
+                </div>
+                <div>
+                    <h5><FormControl className="styled fw-bold" value={headings.footer_1}
+                        onChange={(e) => setHeading({ ...headings, footer_1: e.target.value })} /></h5>
+                    <div>
+                        <FormControl className="styled" value={footer.notes}
+                            as="textarea"
+                            row={3}
+                            onChange={(e) => setFooter({ ...footer, notes: e.target.value })} />
+                    </div>
+                </div>
+                <br />
+                <div>
+                    <h5><FormControl className="styled fw-bold" value={headings.footer_2}
+                        onChange={(e) => setHeading({ ...headings, footer_2: e.target.value })} /></h5>
+                    <div>
+                        <FormControl className="styled" value={footer.tac}
+                            as="textarea"
+                            row={3}
+                            onChange={(e) => setFooter({ ...footer, tac: e.target.value })} />
                     </div>
                 </div>
             </div>

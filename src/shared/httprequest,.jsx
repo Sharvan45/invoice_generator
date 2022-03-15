@@ -34,3 +34,5 @@ customAxios.interceptors.response.use(
 export const POST = (url, data) => {
     return customAxios.post(url, data)
 }
+
+export const GET = (url, data) => customAxios.get(url, data)

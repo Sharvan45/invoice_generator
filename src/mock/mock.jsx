@@ -73,4 +73,100 @@ const mockPost = {
     "reason": " ",
     "tax_authority_id": 11149000000061052,
     "tax_exemption_id": 11149000000061054
-}"
+}
+
+export const mockInvoiceList = {
+    "code": 0,
+    "message": "success",
+    "invoices": [
+        {
+            "invoice_id": 982000000567114,
+            "ach_payment_initiated": false,
+            "customer_name": "Bowman & Co",
+            "customer_id": 982000000567001,
+            "status": "draft",
+            "invoice_number": "INV-00003",
+            "reference_number": " ",
+            "date": "2013-11-17",
+            "due_date": "2013-12-03",
+            "due_days": "Due in 14 day(s)",
+            "currency_id": 982000000000190,
+            "schedule_time": "",
+            "currency_code": "USD",
+            "is_viewed_by_client": false,
+            "has_attachment": false,
+            "client_viewed_time": "",
+            "total": 40.6,
+            "balance": 40.6,
+            "created_time": "2013-11-17T02:17:40-0800",
+            "last_modified_time": "2013-12-18T02:02:51-0800",
+            "is_emailed": false,
+            "reminders_sent": 1,
+            "last_reminder_sent_date": " ",
+            "payment_expected_date": " ",
+            "last_payment_date": " ",
+            "custom_fields": [
+                {
+                    "customfield_id": 439910000000236000,
+                    "data_type": "number",
+                    "index": 1,
+                    "label": "Record Number",
+                    "show_on_pdf": true,
+                    "show_in_all_pdf": true,
+                    "value": 23
+                }
+            ],
+            "documents": "",
+            "salesperson_id": " ",
+            "salesperson_name": " ",
+            "shipping_charge": 0,
+            "adjustment": 0,
+            "write_off_amount": 0,
+            "exchange_rate": 1
+        },
+        {
+            "invoice_id": 982000000567115,
+            "ach_payment_initiated": false,
+            "customer_name": "Bowman & Co",
+            "customer_id": 982000000567001,
+            "status": "draft",
+            "invoice_number": "INV-00003",
+            "reference_number": " ",
+            "date": "2013-11-17",
+            "due_date": "2013-12-03",
+            "due_days": "Due in 14 day(s)",
+            "currency_id": 982000000000190,
+            "schedule_time": "",
+            "currency_code": "USD",
+            "is_viewed_by_client": false,
+            "has_attachment": false,
+            "client_viewed_time": "",
+            "total": 40.6,
+            "balance": 40.6,
+            "created_time": "2013-11-17T02:17:40-0800",
+            "last_modified_time": "2013-12-18T02:02:51-0800",
+            "is_emailed": false,
+            "reminders_sent": 1,
+            "last_reminder_sent_date": " ",
+            "payment_expected_date": " ",
+            "last_payment_date": " ",
+            "custom_fields": [
+                {
+                    "customfield_id": 439910000000236000,
+                    "data_type": "number",
+                    "index": 1,
+                    "label": "Record Number",
+                    "show_on_pdf": true,
+                    "show_in_all_pdf": true,
+                    "value": 23
+                }
+            ],
+            "documents": "",
+            "salesperson_id": " ",
+            "salesperson_name": " ",
+            "shipping_charge": 0,
+            "adjustment": 0,
+            "write_off_amount": 0,
+            "exchange_rate": 1
+        },]
+}
