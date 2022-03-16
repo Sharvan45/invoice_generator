@@ -119,7 +119,7 @@ export const InvoiceTemplate = ({ isEdit = false, id, values }) => {
             setInvoiceDetails({ ...covertedValues.invoiceDetails });
             setTableDetails(covertedValues.tableDetails);
         }
-    }, [id]);
+    }, [id, values]);
 
     const onOwnChange = (e, field) => {
         switch (field) {

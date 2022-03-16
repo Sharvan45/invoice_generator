@@ -22,7 +22,10 @@ export const Edit = () => {
                 console.log(err);
             });
         }
-    }, [searchParams])
+        return () => {
+            setSearchParams({});
+        }
+    }, [searchParams, setSearchParams])
     return (
         <>
             <div className="row print_hide">Edit -{id}
