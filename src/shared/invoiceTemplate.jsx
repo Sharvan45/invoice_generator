@@ -1,8 +1,8 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Button, FormControl, Table } from "react-bootstrap";
 import DatePicker from "react-datepicker";
 
-import { convertModelToFormData } from "./convertors";
+import { convertInvoiceToData, convertModelToFormData } from "./convertors";
 import CountryStateDropdown from "./CountryStateDropdown";
 import { POST } from "./httprequest,";
 import "react-datepicker/dist/react-datepicker.css";
@@ -61,7 +61,7 @@ const removeFromErrors = (errors, item) => {
 }
 const findEmpty = (value) => value ? "" : "print_hide "
 
-export const InvoiceTemplate = () => {
+export const InvoiceTemplate = ({ isEdit = false, id, values }) => {
     const [tableDetails, setTableDetails] =
         useState([{ itemDescritption: "", HNC: "", qty: 1, sgst: 0, cgst: 0, rate: 0 }])
 
@@ -81,7 +81,7 @@ export const InvoiceTemplate = () => {
         clientCompanyCity: "",
         clientCompanyState: 'Tamil Nadu',
         clientCompanyCountry: 'India',
-        supplyState: "Tamil Nadu"
+        supplyS0tate: "Tamil Nadu"
     });
 
     const [invoiceDetails, setInvoiceDetails] = useState({
@@ -109,6 +109,17 @@ export const InvoiceTemplate = () => {
         notes: "It was great doing business with you.",
         tac: "Please make the payment by the due date."
     })
+
+    useEffect(() => {
+        if (id && values) {
+            const covertedValues = convertInvoiceToData(values);
+            setOwnDetails({ ...covertedValues.ownDetails });
+            setClientDetails({ ...covertedValues.clientDetails });
+            setFooter({ ...covertedValues.footer });
+            setInvoiceDetails({ ...covertedValues.invoiceDetails });
+            setTableDetails(covertedValues.tableDetails);
+        }
+    }, [id]);
 
     const onOwnChange = (e, field) => {
         switch (field) {
@@ -171,7 +182,7 @@ export const InvoiceTemplate = () => {
                         style={{ float: 'right' }}
                         onClick={() => { onSubmitClick() }}
                     >
-                        Save </Button>
+                        {isEdit ? "Update" : "Save"} </Button>
                     <Button
                         variant="outline-primary"
                         size="sm"
@@ -183,22 +194,28 @@ export const InvoiceTemplate = () => {
             </div>
             <div className="row">
                 <div className="col-4">
-                    <FormControl placeholder="Your Company Name" className={findEmpty(ownDetails.companyName) +
-                        "styled"}
+                    <FormControl placeholder="Your Company Name"
+                        className={findEmpty(ownDetails.companyName) +
+                            "styled"}
+                        value={ownDetails.companyName}
                         onChange={(e) => onOwnChange(e, "companyName")} />
                     {errorList.includes("ownDetails_name") &&
                         <div className="text-danger">Please enter your company name</div>}
                     <FormControl placeholder="Your Name" className={findEmpty(ownDetails.name) + "styled"}
-                        onChange={(e) => onOwnChange(e, "name")} />
+                        onChange={(e) => onOwnChange(e, "name")}
+                        value={ownDetails.name}
+                    />
                     <FormControl placeholder="Your Company GSTIN"
                         className={findEmpty(ownDetails.companyGST) + "styled"}
-                        onchange={(e) => onOwnChange(e, "companyGST")} />
+                        onchange={(e) => onOwnChange(e, "companyGST")}
+                        value={ownDetails.companyGST} />
                     <FormControl placeholder="Your Company Address"
                         className={findEmpty(ownDetails.companyAddress) + "styled"}
-                        onChange={(e) => onOwnChange(e, "companyAddress")} />
+                        onChange={(e) => onOwnChange(e, "companyAddress")} value={ownDetails.companyAddress} />
                     <FormControl placeholder="City"
                         className={findEmpty(ownDetails.companyCity) + "styled"}
-                        onChange={(e) => onOwnChange(e, "companyCity")} />
+                        onChange={(e) => onOwnChange(e, "companyCity")}
+                        value={ownDetails.companyCity} />
                     <CountryStateDropdown isState
                         onChange={(e) => onOwnChange(e, "companyState")}
                         value={ownDetails.companyState} />
@@ -220,16 +237,17 @@ export const InvoiceTemplate = () => {
                 <div className="col-4" >
                     <h4>Bill To</h4>
                     <FormControl placeholder="Clinet's Company Name"
+                        value={clientDetails.clientCompanyName}
                         className={findEmpty(clientDetails.clientCompanyName) + "styled"}
                         onChange={(e) => onClientChange(e, "clientCompanyName")} />
                     {errorList.includes("clientDetails_name") &&
                         <div className="text-danger">Please enter Client company name</div>}
                     <FormControl placeholder="Client's GSTIN" className={findEmpty(clientDetails.clientCompanyGST) + "styled"}
-                        onChange={(e) => onClientChange(e, "clientCompanyGST")} />
+                        onChange={(e) => onClientChange(e, "clientCompanyGST")} value={clientDetails.clientCompanyGST} />
                     <FormControl placeholder="Client's Address" className={findEmpty(clientDetails.clientCompanyAddress) + "styled"}
-                        onChange={(e) => onClientChange(e, "clientCompanyAddress")} />
+                        onChange={(e) => onClientChange(e, "clientCompanyAddress")} value={clientDetails.clientCompanyAddress} />
                     <FormControl placeholder="City" className={findEmpty(clientDetails.clientCompanyCity) + "styled"}
-                        onChange={(e) => onClientChange(e, "clientCompanyCity")} />
+                        onChange={(e) => onClientChange(e, "clientCompanyCity")} value={clientDetails.clientCompanyCity} />
                     <CountryStateDropdown isState
                         onChange={(e) => onClientChange(e, "clientCompanyState")}
                         value={clientDetails.clientCompanyState} />
@@ -329,46 +347,47 @@ export const InvoiceTemplate = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {tableDetails.map((tb, index) => <tr>
-                            <td key={tb.itemDescritption + index}>
-                                <FormControl className="styled"
-                                    placeholder={"Item Description"}
-                                    onChange={(e) => onItemTableChange(e, index, "itemDescritption")}
-                                    value={tb.itemDescritption} />
-                                <br />
-                                {/* <FormControl className="styled"
+                        {tableDetails.map((tb, index) =>
+                            <tr key={tb}>
+                                <td >
+                                    <FormControl className="styled"
+                                        placeholder={"Item Description"}
+                                        onChange={(e) => onItemTableChange(e, index, "itemDescritption")}
+                                        value={tb.itemDescritption} />
+                                    <br />
+                                    {/* <FormControl className="styled"
                                     onChange={(e) => onItemTableChange(e, index, "HSN")}
                                     placeholder={"HSN/SGC"} value={tb.HNC} /> */}
-                            </td>
-                            <td key={tb.itemDescritption + index}>
-                                <FormControl className="styled" value={tb.qty}
-                                    onChange={(e) => onItemTableChange(e, index, "qty")}
-                                    type="number" />
-                            </td>
-                            <td key={tb.itemDescritption + index}>
-                                <FormControl className="styled" value={tb.rate}
-                                    type="number"
-                                    onChange={(e) => onItemTableChange(e, index, "rate")} />
-                            </td>
-                            <td key={tb.itemDescritption + index}>
-                                <FormControl className="styled" value={tb.sgst}
-                                    type="number"
-                                    onChange={(e) => onItemTableChange(e, index, "sgst")} />
-                            </td>
-                            <td key={tb.itemDescritption + index}>
-                                <FormControl className="styled" value={tb.cgst}
-                                    type="number"
-                                    onChange={(e) => onItemTableChange(e, index, "cgst")} />
-                            </td>
-                            <td key={tb.itemDescritption + index}>
-                                <div className="styled" >{tb.qty * tb.rate}
-                                </div>
-                            </td>
-                            <td key={tb.itemDescritption + index} className="print_hide">
-                                <FontAwesomeIcon icon={faTrash}
-                                    onClick={() => onDeleteItem(index)} />
-                            </td>
-                        </tr>)}
+                                </td>
+                                <td >
+                                    <FormControl className="styled" value={tb.qty}
+                                        onChange={(e) => onItemTableChange(e, index, "qty")}
+                                        type="number" />
+                                </td>
+                                <td >
+                                    <FormControl className="styled" value={tb.rate}
+                                        type="number"
+                                        onChange={(e) => onItemTableChange(e, index, "rate")} />
+                                </td>
+                                <td >
+                                    <FormControl className="styled" value={tb.sgst}
+                                        type="number"
+                                        onChange={(e) => onItemTableChange(e, index, "sgst")} />
+                                </td>
+                                <td >
+                                    <FormControl className="styled" value={tb.cgst}
+                                        type="number"
+                                        onChange={(e) => onItemTableChange(e, index, "cgst")} />
+                                </td>
+                                <td >
+                                    <div className="styled" >{tb.qty * tb.rate}
+                                    </div>
+                                </td>
+                                <td className="print_hide">
+                                    <FontAwesomeIcon icon={faTrash}
+                                        onClick={() => onDeleteItem(index)} />
+                                </td>
+                            </tr>)}
                     </tbody>
                 </Table>
                 <div>

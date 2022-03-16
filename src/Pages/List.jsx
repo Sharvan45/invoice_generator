@@ -50,7 +50,9 @@ export const List = () => {
                         invoiceList.map(invoice => (
                             <tr key={invoice.invoice_id}>
                                 <td><>
-                                    <NavLink to="/edit">{invoice.invoice_number}</NavLink></></td>
+                                    <NavLink to={`/edit?id=${invoice.invoice_id}`}>
+                                        {invoice.invoice_number}
+                                    </NavLink></></td>
                                 <td>{invoice.customer_name} </td>
                                 <td>{invoice.status}</td>
                                 <td>{invoice.date}</td>

@@ -69,3 +69,44 @@ export const convertModelToFormData = (model) => {
     }
 }
 
+export const convertInvoiceToData = (model) => {
+    return ({
+        ownDetails: {
+            companyName: "My Company",
+            name: model?.contact_persons[0]?.first_name,
+            companyAddress: model?.billing_address.address,
+            companyGST: "22AAAAA0000A1Z2",
+            companyCity: model?.billing_address.city,
+            companyState: model?.billing_address.state,
+            companyCountry: model?.billing_address.country,
+        },
+        clientDetails: {
+            clientCompanyName: model?.customer_name,
+            clientCompanyAddress: model?.shipping_address.city,
+            clientCompanyGST: model?.gst_no,
+            clientCompanyCity: model?.shipping_address.city,
+            clientCompanyState: model?.shipping_address.state,
+            clientCompanyCountry: model?.shipping_address.country,
+            supplyState: model?.place_of_supply
+        },
+        invoiceDetails: {
+            invoiceNumber: model?.invoice_number,
+            invoiceDate: new Date(model?.date),
+            dueDate: new Date(model?.due_date),
+        },
+        tableDetails: model?.line_items?.map((item) => (
+            {
+                itemDescritption: item?.name, HNC: "", qty: item?.quantity, sgst: item.tax_percentage / 2, cgst: item.tax_percentage / 2,
+                rate: item.rate
+            })
+        ),
+        footer: {
+            notes: model?.notes,
+            tac: model?.terms
+        },
+    });
+
+};
+
+
+

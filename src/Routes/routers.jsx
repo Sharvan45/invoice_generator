@@ -12,7 +12,7 @@ export const Routers = () => {
         <div className="container app">
             <div className="row text-center border-bottom print_hide"> <h3>Invoice Generator</h3></div>
             <Router>
-                <div>
+                <div className="print_hide">
                     <Header />
                 </div>
                 {/* <Header auth={auth} /> */}
