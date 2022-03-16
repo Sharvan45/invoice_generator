@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-
+import { NavLink } from "react-router-dom"
 import { Table } from "react-bootstrap";
 import { mockInvoiceList } from "../mock/mock";
 import { GET } from "../shared/httprequest,";
@@ -49,7 +49,8 @@ export const List = () => {
                         "No Invoices" :
                         invoiceList.map(invoice => (
                             <tr key={invoice.invoice_id}>
-                                <td>{invoice.invoice_number}</td>
+                                <td><>
+                                    <NavLink to="/edit">{invoice.invoice_number}</NavLink></></td>
                                 <td>{invoice.customer_name} </td>
                                 <td>{invoice.status}</td>
                                 <td>{invoice.date}</td>

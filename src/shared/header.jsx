@@ -1,11 +1,12 @@
 import { React } from "react";
-import { useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 const Header = () => {
-    let navigate = useNavigate();
     return (
         <>
-            <p onClick={() => { navigate("/lists") }}>List</p>
+            <NavLink to="/">Create</NavLink>
+            <NavLink to="/lists">List</NavLink>
+            <NavLink to="/edit">Edit</NavLink>
         </>
     );
 }
