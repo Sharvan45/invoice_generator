@@ -4,5 +4,6 @@ import "./Create.scss";
 
 
 export const Create = () =>
-    <InvoiceTemplate />
+    <div className="pt-4"> <InvoiceTemplate /></div>
+
 

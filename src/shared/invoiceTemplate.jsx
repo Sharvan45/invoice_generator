@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { Button, FormControl, Table } from "react-bootstrap";
+import { Button, FormControl, Table, Toast } from "react-bootstrap";
 import DatePicker from "react-datepicker";
 
 import { convertInvoiceToData, convertModelToFormData } from "./convertors";
@@ -21,22 +21,22 @@ const renderTotal = (items) => {
         cgst += ((item.cgst / 100) * (item.qty * item.rate));
     })
     return <Table>
-        <tbody>
+        <tbody className="text-center">
             <tr>
-                <td>Sub Total</td>
-                <td>{total.toFixed(2)}</td>
+                <td className="col-7">Sub Total</td>
+                <td className="col-5">{total.toFixed(2)}</td>
             </tr>
             <tr>
-                <td>SGST</td>
-                <td>{sgst.toFixed(2)}</td>
+                <td className="col-7">SGST</td>
+                <td className="col-5">{sgst.toFixed(2)}</td>
             </tr>
             <tr>
-                <td>CGST</td>
-                <td>{cgst.toFixed(2)}</td>
+                <td className="col-7">CGST</td>
+                <td className="col-5">{cgst.toFixed(2)}</td>
             </tr>
             <tr>
-                <td>Total</td>
-                <td><currencyDropdown />
+                <td className="col-7">Total</td>
+                <td className="col-5"><currencyDropdown />
                     {(total + sgst + cgst).toFixed(2)}</td>
             </tr>
         </tbody>
@@ -110,6 +110,8 @@ export const InvoiceTemplate = ({ isEdit = false, id, values }) => {
         tac: "Please make the payment by the due date."
     })
 
+    const [showToast, setShowToast] = useState(false);
+
     useEffect(() => {
         if (id && values) {
             const covertedValues = convertInvoiceToData(values);
@@ -149,13 +151,28 @@ export const InvoiceTemplate = ({ isEdit = false, id, values }) => {
         setErrorList(errors);
         if (errors.length === 0) {
             POST("invoices", convertModelToFormData({ ownDetails, clientDetails, tableDetails }))
+                .then(res => { setShowToast(true) });
         }
     }
 
     const onItemTableChange = (e, index, field) => {
         let items = [...tableDetails];
-        items[index][field] = e.target.value;
-        setTableDetails(items);
+        let value = e.target.value;
+        switch (field) {
+            case "sgst":
+            case "cgst":
+                value = e.target.value > 100 ? 100 : e.target.value < 0 ? 0 : e.target.value;
+                e.target.value = 100;
+                break;
+            case "qty":
+            case "rate":
+                value = e.target.value < 0 ? 0 : e.target.value;
+                break;
+            default:
+                break;
+        }
+        items[index][field] = value;
+        setTableDetails([...items]);
     }
 
     const onDeleteItem = (index) => {
@@ -168,13 +185,21 @@ export const InvoiceTemplate = ({ isEdit = false, id, values }) => {
 
     const onAddItem = () => {
         let items = [...tableDetails];
-        items.push(invoiceDetailsTemplate);
+        items.push({ ...invoiceDetailsTemplate });
         setTableDetails(items);
     }
 
     return (
         <>
             <div className="row print_hide">
+                <Toast show={showToast} onClose={() => setShowToast(false)}>
+                    <Toast.Header>
+                        Success
+                    </Toast.Header>
+                    <Toast.Body>
+                        Your invoice has been saved successfully.
+                    </Toast.Body>
+                </Toast>
                 <div>
                     <Button
                         variant="outline-primary"
@@ -187,6 +212,7 @@ export const InvoiceTemplate = ({ isEdit = false, id, values }) => {
                         variant="outline-primary"
                         size="sm"
                         style={{ float: 'right' }}
+                        className="ml-2"
                         onClick={() => { window.print() }}
                     >
                         Print </Button>
@@ -393,8 +419,9 @@ export const InvoiceTemplate = ({ isEdit = false, id, values }) => {
                 <div>
                     <div className="row">
                         <div className="col-6">
-                            <div className="print_hide"><FontAwesomeIcon icon={faPlus}
-                                onClick={() => onAddItem()} />
+                            <div className="print_hide"
+                                onClick={() => onAddItem()}>
+                            <FontAwesomeIcon icon={faPlus} />
                                 Add</div> </div>
                         <div className="col-6">
                             {renderTotal(tableDetails)}

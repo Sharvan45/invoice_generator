@@ -2,16 +2,16 @@ export const convertModelToFormData = (model) => {
     return {
         "customer_id": 982000000567001,
         "contact_persons": [model?.ownDetails?.name],
-        "invoice_number": "INV-00003",
-        "reference_number": " ",
-        "place_of_supply": "TN",
+        "invoice_number": model?.invoiceDetails?.invoiceNumber,
+        "reference_number": "",
+        "place_of_supply": model?.clientDetails?.supplyState,
         "gst_treatment": "business_gst",
-        "gst_no": "22AAAAA0000A1Z5",
+        "gst_no": model?.clientDetails?.companyGst,
         "template_id": 982000000000143,
-        "date": "2013-11-17",
+        "date": model?.invoiceDetails?.invoiceDate,
         "payment_terms": 15,
         "payment_terms_label": "Net 15",
-        "due_date": "2013-12-03",
+        "due_date": model?.invoiceDetails?.dueDate,
         "discount": 0,
         "is_discount_before_tax": true,
         "discount_type": "item_level",
@@ -22,30 +22,29 @@ export const convertModelToFormData = (model) => {
         "salesperson_name": " ",
         "custom_fields": [],
         "project_id": 90300000087378,
-        "line_items": [
-            {
+        "line_items":
+            model?.tableDetails?.map((item) => ({
                 "item_id": 982000000030049,
                 "project_id": 90300000087378,
                 "time_entry_ids": [
                     {}
                 ],
                 "expense_id": " ",
-                "name": "Hard Drive",
+                "name": item.item,
                 "product_type": "goods",
                 "hsn_or_sac": 80540,
                 "item_order": 1,
-                "rate": 120,
-                "quantity": 1,
+                "rate": item.rate,
+                "quantity": item?.qty,
                 "unit": " ",
                 "discount": 0,
                 "tax_id": 982000000557028,
                 "tax_exemption_id": 11149000000061054,
                 "tax_name": "VAT",
                 "tax_type": "tax",
-                "tax_percentage": 12.5,
-                "item_total": 120
-            }
-        ],
+                "tax_percentage": (item?.sgst + item.cgst),
+                "item_total": item?.qty * item.rate,
+            })),
         "payment_options": {
             "payment_gateways": [
                 {
@@ -58,8 +57,8 @@ export const convertModelToFormData = (model) => {
         "allow_partial_payments": true,
         "custom_body": " ",
         "custom_subject": " ",
-        "notes": "Looking forward for your business.",
-        "terms": "Terms & Conditions apply",
+        "notes": model?.footer?.notes,
+        "terms": model?.footer?.tac,
         "shipping_charge": 0,
         "adjustment": 0,
         "adjustment_description": " ",

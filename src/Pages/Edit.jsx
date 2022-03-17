@@ -28,17 +28,25 @@ export const Edit = () => {
     }, [searchParams, setSearchParams])
     return (
         <>
-            <div className="row print_hide">Edit -{id}
-                <FormControl
-                    ref={textboxRef}
-                /> <Button
-                    variant="outline-primary"
-                    size="sm"
-                    style={{ float: 'right' }}
-                    onClick={() => { console.log(textboxRef.current.value); }}
-                >
-                    Search </Button></div>
-            {invoice &&
+            <div className="row print_hide">
+                <div className="col-9">
+                    Edit -{id}
+                </div>
+                <div className="col-3">
+                    <FormControl
+                        ref={textboxRef}
+                    />
+                    <Button
+                        variant="outline-primary"
+                        size="sm"
+                        style={{ float: 'right' }}
+                        onClick={() => { console.log(textboxRef.current.value); }}
+                    >
+                        Search </Button>
+                </div>
+            </div>
+            {
+                invoice &&
                 <InvoiceTemplate
                     id={invoice.invoice_id}
                     isEdit={true}
