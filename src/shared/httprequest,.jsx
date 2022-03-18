@@ -36,3 +36,5 @@ export const POST = (url, data) => {
 }
 
 export const GET = (url, data) => customAxios.get(url, data)
+
+export const PUT = (url, data) => customAxios.put(url, data)

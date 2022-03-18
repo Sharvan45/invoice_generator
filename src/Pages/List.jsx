@@ -8,15 +8,20 @@ export const List = () => {
 
     useEffect(() => {
         GET("invoices", {}).then(res => {
+            setIsLoading(false);
             setInvoiceList(mockInvoiceList.invoices);
         }).catch(err => {
             // for demo purpose
+            setIsLoading(false);
             setInvoiceList(mockInvoiceList.invoices);
         })
     });
 
     const [invoiceList, setInvoiceList] = useState([]);
-
+    const [isLoadaing, setIsLoading] = useState(true);
+    if (isLoadaing) {
+        return <div>Loading...</div>
+    }
     return (
         <>
             <h3>List of Invoices</h3>

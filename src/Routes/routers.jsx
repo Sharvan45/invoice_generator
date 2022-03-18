@@ -10,15 +10,15 @@ import Header from "../shared/header";
 export const Routers = () => {
     return (
         <div className="container app">
-         
+
             <Router>
                 <div className="print_hide">
                     <Header />
                 </div>
                 {/* <Header auth={auth} /> */}
                 <Routes>
-                    <Route exact path='/lists' element={<List />} />
-                    <Route exact path='/edit' element={<Edit />} />
+                    <Route path='/lists' element={<List />} />
+                    <Route path='/edit' element={<Edit />} />
                     <Route path='*' element={<Create />} />
                 </Routes>
             </Router >

@@ -4,7 +4,7 @@ import DatePicker from "react-datepicker";
 
 import { convertInvoiceToData, convertModelToFormData } from "./convertors";
 import CountryStateDropdown from "./CountryStateDropdown";
-import { POST } from "./httprequest,";
+import { POST, PUT } from "./httprequest,";
 import "react-datepicker/dist/react-datepicker.css";
 import "./invoiceTemplate.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -20,23 +20,23 @@ const renderTotal = (items) => {
         sgst += ((item.sgst / 100) * (item.qty * item.rate));
         cgst += ((item.cgst / 100) * (item.qty * item.rate));
     })
-    return <Table>
+    return <Table className="totalTable">
         <tbody className="text-center">
             <tr>
-                <td className="col-7">Sub Total</td>
+                <td className="col-7 fw-bold">Sub Total</td>
                 <td className="col-5">{total.toFixed(2)}</td>
             </tr>
             <tr>
-                <td className="col-7">SGST</td>
+                <td className="col-7 fw-bold">SGST</td>
                 <td className="col-5">{sgst.toFixed(2)}</td>
             </tr>
             <tr>
-                <td className="col-7">CGST</td>
+                <td className="col-7 fw-bold">CGST</td>
                 <td className="col-5">{cgst.toFixed(2)}</td>
             </tr>
             <tr>
-                <td className="col-7">Total</td>
-                <td className="col-5"><currencyDropdown />
+                <td className="col-7 fw-bold">Total</td>
+                <td className="col-5 fw-bold"><currencyDropdown />
                     {(total + sgst + cgst).toFixed(2)}</td>
             </tr>
         </tbody>
@@ -150,8 +150,12 @@ export const InvoiceTemplate = ({ isEdit = false, id, values }) => {
         let errors = validation({ ownDetails, clientDetails, tableDetails });
         setErrorList(errors);
         if (errors.length === 0) {
-            POST("invoices", convertModelToFormData({ ownDetails, clientDetails, tableDetails }))
-                .then(res => { setShowToast(true) });
+            if (!isEdit) {
+                POST("invoices", convertModelToFormData({ ownDetails, clientDetails, tableDetails }))
+                    .then(res => { setShowToast(true) });
+                return
+            }
+            PUT(`invoices/${id}`, convertModelToFormData({ ownDetails, clientDetails, tableDetails })).then(res => { setShowToast(true) });
         }
     }
 
@@ -409,7 +413,7 @@ export const InvoiceTemplate = ({ isEdit = false, id, values }) => {
                                     <div className="styled" >{tb.qty * tb.rate}
                                     </div>
                                 </td>
-                                <td className="print_hide">
+                                <td className="print_hide text-danger">
                                     <FontAwesomeIcon icon={faTrash}
                                         onClick={() => onDeleteItem(index)} />
                                 </td>
@@ -419,9 +423,9 @@ export const InvoiceTemplate = ({ isEdit = false, id, values }) => {
                 <div>
                     <div className="row">
                         <div className="col-6">
-                            <div className="print_hide"
+                            <div className="print_hide text-primary"
                                 onClick={() => onAddItem()}>
-                            <FontAwesomeIcon icon={faPlus} />
+                                <FontAwesomeIcon icon={faPlus} />
                                 Add</div> </div>
                         <div className="col-6">
                             {renderTotal(tableDetails)}
