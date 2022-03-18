@@ -30,7 +30,7 @@ export const Edit = () => {
 
     useEffect(() => {
         getInvoice();
-    }, [])
+    });
     return (
         <>
             <div className="row print_hide">

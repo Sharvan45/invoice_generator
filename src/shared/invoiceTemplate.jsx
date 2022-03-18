@@ -237,7 +237,7 @@ export const InvoiceTemplate = ({ isEdit = false, id, values }) => {
                     />
                     <FormControl placeholder="Your Company GSTIN"
                         className={findEmpty(ownDetails.companyGST) + "styled"}
-                        onchange={(e) => onOwnChange(e, "companyGST")}
+                        onChange={(e) => onOwnChange(e, "companyGST")}
                         value={ownDetails.companyGST} />
                     <FormControl placeholder="Your Company Address"
                         className={findEmpty(ownDetails.companyAddress) + "styled"}
